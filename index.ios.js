@@ -12,16 +12,38 @@ var {
   NavigatorIOS,
   StyleSheet,
   View,
+  ListView,
   Text,
   Image
 } = React;
 
 var yuetai = React.createClass({
+  getInitialState: function() {
+    var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+    return {
+      dataSource: ds.cloneWithRows(['first', 'second','first', 'second','first', 'second','first', 'second','first', 'second','first', 'second'
+        ,'first', 'second','first', 'second','first', 'second','first', 'second']),
+    };
+  },
+
+  renderRow: function (rowData) {
+    return (
+      <Text style={{fontSize: '20',marginBottom: 10}}>{rowData}</Text>
+    )
+  },
+
   render: function() {
     return (
       <View style={styles.container}>
-        <Text>Hello word</Text>
-        <Image source={{uri: 'https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRzMdAq1SPoSs-ezDLO_XygGvZ_3yfAkCgxwEAu_994Hs8qoyhA'}} style={styles.thumbnail}/>
+        <ListView 
+          keyboardDismissMode="onDrag"
+          dataSource={this.state.dataSource}
+          renderRow={this.renderRow}
+          automaticallyAdjustContentInsets={false}
+          keyboardDismissMode="onDrag"
+          keyboardShouldPersistTaps={true}
+          showsVerticalScrollIndicator={false}
+        />
       </View>
     );
   }
