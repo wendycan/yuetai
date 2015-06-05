@@ -17,22 +17,47 @@ var {
   Image
 } = React;
 
+var ApiPrefix = 'http://localhost:3000/api/v1';
+
 var yuetai = React.createClass({
   getInitialState: function() {
-    var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+    var ds = new ListView.DataSource({
+      rowHasChanged: (r1, r2) => r1 !== r2
+    });
     return {
-      dataSource: ds.cloneWithRows(['first', 'second','first', 'second','first', 'second','first', 'second','first', 'second','first', 'second'
-        ,'first', 'second','first', 'second','first', 'second','first', 'second']),
+      dataSource: ds,
     };
   },
-
-  renderRow: function (rowData) {
+  componentWillMount: function () {
+    var _this = this;
+    fetch(ApiPrefix + '/articles').then((response) => response.json())
+      .catch(function (reason) {
+        console.log(reason);
+      })
+      .then(function (responseData) {
+        _this.setState({
+          dataSource: _this.getDataSource(responseData),
+        });
+      });
+  },
+  renderRow: function (blog) {
+    window.blog = blog;
     return (
-      <Text style={{fontSize: '20',marginBottom: 10}}>{rowData}</Text>
+      <View>
+        <Text style={{fontSize: '25',marginBottom: 10}}>{blog.title}</Text>
+        <Text style={{fontSize: '16',marginBottom: 10}}>{blog.created_at}</Text>
+        <Text style={{fontSize: '18',marginBottom: 10}}>{blog.body.slice(0,100)}</Text>
+        <View style={styles.separator} />
+      </View>
     )
   },
 
+  getDataSource: function(blogs: Array<any>): ListView.DataSource {
+    return this.state.dataSource.cloneWithRows(blogs);
+  },
+
   render: function() {
+
     return (
       <View style={styles.container}>
         <ListView 
@@ -51,8 +76,9 @@ var yuetai = React.createClass({
 
 var styles = StyleSheet.create({
   container: {
+    paddingTop: 30,
     flex: 1,
-    justifyContent: 'center',
+    // justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
   },
@@ -65,6 +91,10 @@ var styles = StyleSheet.create({
     textAlign: 'center',
     color: '#333333',
     marginBottom: 5,
+  },
+  separator: {
+    height: 1,
+    backgroundColor: '#eeeeee',
   },
   thumbnail: {
     width: 222,
