@@ -27,6 +27,11 @@ var {
   View,
 } = React;
 
+var stripDate = function (dateString) {
+  var date = new Date(dateString);
+  var result = date.getFullYear() + '年' + (date.getMonth() + 1) + '月';
+  return result;
+}
 
 var resultsCache = {
   dataForQuery: {},
@@ -39,18 +44,18 @@ var LOADING = {};
 var BlogScreen = React.createClass({
 
   render: function() {
-    console.log(this.props.blog);
     return (
       <ScrollView contentContainerStyle={styles.contentContainer}>
         <View style={styles.mainSection}>
           <View style={styles.rightPane}>
-            <Text style={styles.movieTitle}>{this.props.blog.title}</Text>
-            <Text>{this.props.blog.created_at}</Text>
+            <Text style={styles.blogTitle}>{this.props.blog.title}</Text>
+            <Text>{stripDate(this.props.blog.created_at)}</Text>
           </View>
         </View>
         <View style={styles.separator} />
         <Text>
-          {this.props.blog.body}
+          {this.props.blog.body.replace(/\&lt;/ig, '<').replace(/\&gt;/ig, '>')
+.replace(/\<div/ig, '\n<div').replace(/<.*?>/g, '')}
         </Text>
       </ScrollView>
     );
@@ -65,19 +70,9 @@ var styles = StyleSheet.create({
     justifyContent: 'space-between',
     flex: 1,
   },
-  movieTitle: {
+  blogTitle: {
     flex: 1,
-    fontSize: 16,
-    fontWeight: '500',
-  },
-  rating: {
-    marginTop: 10,
-  },
-  ratingTitle: {
-    fontSize: 14,
-  },
-  ratingValue: {
-    fontSize: 28,
+    fontSize: 18,
     fontWeight: '500',
   },
   mpaaWrapper: {

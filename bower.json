@@ -1,0 +1,12 @@
+{
+  "name": "yuetai",
+  "version": "0.0.0",
+  "authors": [
+    "wendy <wendycaner@gmail.com>"
+  ],
+  "description": "yuetai",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+  }
+}

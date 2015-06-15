@@ -8,6 +8,11 @@ var {
   View
 } = React;
 
+var stripDate = function (dateString) {
+  var date = new Date(dateString);
+  var result = date.getFullYear() + '年' + (date.getMonth() + 1) + '月';
+  return result;
+}
 
 var BlogCell = React.createClass({
   render: function() {
@@ -15,9 +20,10 @@ var BlogCell = React.createClass({
       <View>
         <TouchableHighlight onPress={this.props.onSelect}>
           <View>
-            <Text style={{fontSize: 25,marginBottom: 10}}>{this.props.blog.title}</Text>
-            <Text style={{fontSize: 16,marginBottom: 10}}>{this.props.blog.created_at}</Text>
-            <Text style={{fontSize: 18,marginBottom: 10}}>{this.props.blog.body.slice(0,100)}</Text>
+            <Text style={{fontSize: 25,marginBottom: 10,marginTop: 10,color: '#68b16f'}}>{this.props.blog.title}</Text>
+            <Text style={{fontSize: 16,marginBottom: 10}}>{stripDate(this.props.blog.created_at)}</Text>
+            <Text style={{fontSize: 18,marginBottom: 10}}>{this.props.blog.body.replace(/\&lt;/ig, '<').replace(/\&gt;/ig, '>')
+.replace(/\<div/ig, '\n<div').replace(/<.*?>/g, '').slice(0,100)}</Text>
             <View style={styles.separator} />
           </View>
         </TouchableHighlight>

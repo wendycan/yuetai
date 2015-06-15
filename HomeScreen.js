@@ -19,7 +19,8 @@ var {
   Image
 } = React;
 
-var ApiPrefix = 'http://localhost:3000/api/v1';
+// var ApiPrefix = 'http://localhost:3000/api/v1';
+var ApiPrefix = 'http://yuetai.wendycan.org/api/v1';
 
 var HomeScreen = React.createClass({
   getInitialState: function() {
@@ -65,11 +66,9 @@ var HomeScreen = React.createClass({
   },
 
   render: function() {
-
     return (
       <View style={styles.container}>
-        <ListView 
-          keyboardDismissMode="onDrag"
+        <ListView
           dataSource={this.state.dataSource}
           renderRow={this.renderRow}
           automaticallyAdjustContentInsets={false}
@@ -84,11 +83,10 @@ var HomeScreen = React.createClass({
 
 var styles = StyleSheet.create({
   container: {
-    paddingTop: 30,
     flex: 1,
-    // justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    paddingTop: 60,
+    paddingLeft: 10,
+    paddingRight: 10,
   },
   welcome: {
     fontSize: 20,
