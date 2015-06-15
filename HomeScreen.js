@@ -1,63 +1,113 @@
 /**
- * The examples provided by Facebook are for non-commercial testing and
- * evaluation purposes only.
- *
- * Facebook reserves all rights not expressly granted.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
- * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL
- * FACEBOOK BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN
- * AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- *
- * @flow
+ * Sample React Native App
+ * https://github.com/facebook/react-native
  */
 'use strict';
 
 var React = require('react-native');
+var HomeScreen = require('./HomeScreen');
+var BlogScreen = require('./BlogScreen');
+var BlogCell = require('./BlogCell');
+
 var {
-  ActivityIndicatorIOS,
-  ListView,
+  AppRegistry,
+  NavigatorIOS,
   StyleSheet,
-  Text,
-  TextInput,
   View,
+  ListView,
+  Text,
+  Image
 } = React;
 
-
-var resultsCache = {
-  dataForQuery: {},
-  nextPageNumberForQuery: {},
-  totalForQuery: {},
-};
-
-var LOADING = {};
+var ApiPrefix = 'http://localhost:3000/api/v1';
 
 var HomeScreen = React.createClass({
-
   getInitialState: function() {
+    var ds = new ListView.DataSource({
+      rowHasChanged: (r1, r2) => r1 !== r2
+    });
     return {
-      isLoading: false,
-      isLoadingTail: false,
-      dataSource: new ListView.DataSource({
-        rowHasChanged: (row1, row2) => row1 !== row2,
-      }),
-      filter: '',
-      queryNumber: 0,
+      dataSource: ds,
     };
   },
+  componentWillMount: function () {
+    var _this = this;
+    fetch(ApiPrefix + '/articles').then((response) => response.json())
+      .catch(function (reason) {
+        console.log(reason);
+      })
+      .then(function (responseData) {
+        _this.setState({
+          dataSource: _this.getDataSource(responseData),
+        });
+      });
+  },
+  selectBlog: function (blog: Object) {
+    console.log('press')
+    this.props.navigator.push({
+      title: blog.title,
+      component: BlogScreen,
+      passProps: {blog},
+    });
+  },
+  renderRow: function (blog) {
+    window.blog = blog;
+    return (
+      <BlogCell 
+        onSelect={() => this.selectBlog(blog)}
+        blog={blog}
+      />
+    )
+  },
 
-  
+  getDataSource: function(blogs: Array<any>): ListView.DataSource {
+    return this.state.dataSource.cloneWithRows(blogs);
+  },
+
   render: function() {
 
     return (
-      <View>
-        <Text>Hello word</Text>
+      <View style={styles.container}>
+        <ListView 
+          keyboardDismissMode="onDrag"
+          dataSource={this.state.dataSource}
+          renderRow={this.renderRow}
+          automaticallyAdjustContentInsets={false}
+          keyboardDismissMode="onDrag"
+          keyboardShouldPersistTaps={true}
+          showsVerticalScrollIndicator={false}
+        />
       </View>
     );
-  },
+  }
 });
 
+var styles = StyleSheet.create({
+  container: {
+    paddingTop: 30,
+    flex: 1,
+    // justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5FCFF',
+  },
+  welcome: {
+    fontSize: 20,
+    textAlign: 'center',
+    margin: 10,
+  },
+  instructions: {
+    textAlign: 'center',
+    color: '#333333',
+    marginBottom: 5,
+  },
+  separator: {
+    height: 1,
+    backgroundColor: '#eeeeee',
+  },
+  thumbnail: {
+    width: 222,
+    height: 227,
+  },
+});
 
 module.exports = HomeScreen;
