@@ -6,6 +6,8 @@
 
 var React = require('react-native');
 var HomeScreen = require('./HomeScreen');
+var BlogScreen = require('./BlogScreen');
+var BlogCell = require('./BlogCell');
 
 var {
   AppRegistry,
@@ -40,15 +42,21 @@ var yuetai = React.createClass({
         });
       });
   },
+  selectBlog: function (blog: Object) {
+    console.log('press')
+    this.props.navigator.push({
+      title: blog.title,
+      component: BlogScreen,
+      passProps: {blog},
+    });
+  },
   renderRow: function (blog) {
     window.blog = blog;
     return (
-      <View>
-        <Text style={{fontSize: '25',marginBottom: 10}}>{blog.title}</Text>
-        <Text style={{fontSize: '16',marginBottom: 10}}>{blog.created_at}</Text>
-        <Text style={{fontSize: '18',marginBottom: 10}}>{blog.body.slice(0,100)}</Text>
-        <View style={styles.separator} />
-      </View>
+      <BlogCell 
+        onSelect={() => this.selectBlog(blog)}
+        blog={blog}
+      />
     )
   },
 
